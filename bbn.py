@@ -11,12 +11,25 @@ def generateIndependentNodes(DAG):
 
 def generateDependentNodes(DAG):
     flat_dep_events = [num for sublist in list(DAG.values()) for num in sublist]
-    dep_events = set(flat_dep_events)
-    print(f"The Dependent Events are : {dep_events}")
-    return dep_events
+
+    cond_ind_events = list()
+    dep_events = list()
+    for event in flat_dep_events:
+        if event not in dep_events:
+            # generates a unique list of values from DAG
+            dep_events.append(event)
+        else:
+            # generates a list containing duplicates of values from DAG
+            cond_ind_events.append(event)
+    for event in dep_events:
+        # removing the duplicate value(s) from the unique list
+        if event in cond_ind_events:
+            dep_events.remove(event)
+
+    return cond_ind_events, dep_events
         
 
-def computeConditionalProbability(events):
+def computeIEConditionalProbability(events):
     event_cp = dict()
     for event in events:
         temp_event_cp = dict()
@@ -29,13 +42,25 @@ def computeConditionalProbability(events):
     return event_cp
 
 
+def computeCIEConditionalProbability(cond_ind_events):
+    pass
+
+
+def computeDEConditionalProbability(dep_events):
+    pass
+
+
 def main():
     ind_events = generateIndependentNodes(DAG)
-    cp_ind_events = computeConditionalProbability(ind_events)
-    dep_events = generateDependentNodes(DAG)
-    cp_dep_events = computeConditionalProbability(dep_events)
-    # TO DO: Update the genCp() to enable the computing of diff probabilities for 'A' & for 'DC','SC'
-
+    cp_ind_events = computeIEConditionalProbability(ind_events)
+    
+    cond_ind_events, dep_events = generateDependentNodes(DAG)
+    print(f"Conditionally Independent Events : {cond_ind_events}")
+    print(f"Dependent Events : {dep_events}")
+    cp_cond_ind_events = computeCIEConditionalProbability(cond_ind_events)
+    cp_dep_events = computeDEConditionalProbability(dep_events)
+    # TO DO: Update the compute cp functions for conditionally independent & dependent events 
+    # each containing different inputs required for the truth tables
 
 
 if __name__ == "__main__":
